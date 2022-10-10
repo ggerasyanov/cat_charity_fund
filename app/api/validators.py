@@ -32,3 +32,34 @@ async def check_name_duplicate(
             status_code=422,
             detail='Проект с таким именем уже существует.'
         )
+
+
+async def check_invested_amount(
+    charity_project
+) -> None:
+    if charity_project.invested_amount > 0:
+        raise HTTPException(
+            status_code=422,
+            detail='Нельзя удалить проект в который уже внесли деньги.'
+        )
+
+
+async def check_full_amount(
+    charity_project,
+    obj_in,
+) -> None:
+    if charity_project.full_amount <= obj_in.full_amount:
+        raise HTTPException(
+            status_code=422,
+            detail='Нужно указать сумму больше чем была.'
+        )
+
+
+async def check_close_project(
+    charity_project,
+) -> None:
+    if charity_project.close_date is not None:
+        raise HTTPException(
+            status_code=422,
+            detail='Уже закрытый проект нельзя удалить.'
+        )

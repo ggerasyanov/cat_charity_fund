@@ -36,6 +36,7 @@ class DonationDB(DonationBase):
 
     id: int
     create_date: datetime
+    close_date: Optional[datetime]
 
     class Config:
         orm_mode = True

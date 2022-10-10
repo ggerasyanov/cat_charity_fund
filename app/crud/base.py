@@ -7,8 +7,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import User
 
-NOW = datetime.now()
-
 
 class CRUDBase:
 
@@ -40,12 +38,12 @@ class CRUDBase:
             session: AsyncSession,
             user: Optional[User] = None
     ):
-        obj_in_data = obj_in.dict()
-        obj_in_data['create_date'] = NOW
-        # obj_in_data['close_date'] = NOW
+        if type(obj_in) != dict:
+            obj_in = obj_in.dict()
+        obj_in['create_date'] = datetime.now()
         if user is not None:
-            obj_in_data['user_id'] = user.id
-        db_obj = self.model(**obj_in_data)
+            obj_in['user_id'] = user.id
+        db_obj = self.model(**obj_in)
         session.add(db_obj)
         await session.commit()
         await session.refresh(db_obj)
