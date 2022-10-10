@@ -56,11 +56,12 @@ class CRUDBase:
             session: AsyncSession,
     ):
         obj_data = jsonable_encoder(db_obj)
-        update_data = obj_in.dict(exclude_unset=True)
+        if type(obj_in) != dict:
+            obj_in = obj_in.dict(exclude_unset=True)
 
         for field in obj_data:
-            if field in update_data:
-                setattr(db_obj, field, update_data[field])
+            if field in obj_in:
+                setattr(db_obj, field, obj_in[field])
         session.add(db_obj)
         await session.commit()
         await session.refresh(db_obj)
