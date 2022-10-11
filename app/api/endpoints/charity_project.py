@@ -12,7 +12,6 @@ from app.schemas.charity_project import (CharityProjectCreate,
                                          CharityProjectUpdate)
 from app.services.views import (comparison_full_amount_and_invested_amount,
                                 start_invest_after_create_obj)
-
 from ..validators import (check_charity_project_exists, check_close_project,
                           check_field_not_empty, check_full_amount,
                           check_invested_amount, check_name_duplicate,
@@ -34,13 +33,12 @@ async def create_new_charity_project(
 ):
     """Только для суперюзеров."""
     await check_name_duplicate(charity_project.name, session)
-    new_project = await charityproject_crud.create(
+    return await charityproject_crud.create(
         await start_invest_after_create_obj(
             charity_project, Donation, session
         ),
         session,
     )
-    return new_project
 
 
 @router.get(
@@ -51,8 +49,7 @@ async def create_new_charity_project(
 async def get_all_charity_project(
     session: AsyncSession = Depends(get_async_session),
 ):
-    all_project = await charityproject_crud.get_multi(session)
-    return all_project
+    return await charityproject_crud.get_multi(session)
 
 
 @router.delete(
@@ -71,10 +68,9 @@ async def remove_charity_project(
     )
     await check_invested_amount(charity_project)
     await check_close_project(charity_project)
-    charity_project = await charityproject_crud.remove(
+    return await charityproject_crud.remove(
         charity_project, session
     )
-    return charity_project
 
 
 @router.patch(
@@ -103,8 +99,6 @@ async def partially_update_charity_project(
             charity_project,
             obj_in,
         )
-
-    charity_project = await charityproject_crud.update(
+    return await charityproject_crud.update(
         charity_project, obj_in, session,
     )
-    return charity_project

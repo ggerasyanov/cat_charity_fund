@@ -1,13 +1,14 @@
 from datetime import datetime
+from http import HTTPStatus
 from typing import Optional
 
 from fastapi import HTTPException
-from pydantic import BaseModel, validator
+from pydantic import BaseModel, PositiveInt, validator
 
 
 class DonationBase(BaseModel):
 
-    full_amount: int
+    full_amount: PositiveInt
     comment: Optional[str]
 
 
@@ -17,7 +18,7 @@ class DonationCreate(DonationBase):
     def full_amount_cannot_be_less_zero(cls, value: int):
         if value <= 0:
             raise HTTPException(
-                status_code=422,
+                status_code=HTTPStatus.UNPROCESSABLE_ENTITY,
                 detail='Сумма должна быть больше нуля.'
             )
         return value
@@ -26,7 +27,7 @@ class DonationCreate(DonationBase):
     def comment_cannot_be_null(cls, value: str):
         if len(value) == 0:
             raise HTTPException(
-                status_code=422,
+                status_code=HTTPStatus.UNPROCESSABLE_ENTITY,
                 detail='Комментарий должен быть не пустым'
             )
         return value

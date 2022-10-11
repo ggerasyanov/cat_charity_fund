@@ -1,15 +1,16 @@
 from datetime import datetime
+from http import HTTPStatus
 from typing import Optional
 
 from fastapi import HTTPException
-from pydantic import BaseModel, Extra, Field, validator
+from pydantic import BaseModel, Extra, Field, PositiveInt, validator
 
 
 class CharityProjectBase(BaseModel):
 
     name: Optional[str] = Field(None, max_length=100)
     description: Optional[str]
-    full_amount: Optional[int]
+    full_amount: Optional[PositiveInt]
 
     class Config:
         extra = Extra.forbid
@@ -21,7 +22,7 @@ class CharityProjectUpdate(CharityProjectBase):
     def full_amount_cannot_be_less_zero(cls, value: int):
         if value <= 0:
             raise HTTPException(
-                status_code=422,
+                status_code=HTTPStatus.UNPROCESSABLE_ENTITY,
                 detail='Сумма должна быть больше нуля.'
             )
         return value

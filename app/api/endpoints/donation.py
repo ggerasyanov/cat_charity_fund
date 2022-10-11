@@ -24,14 +24,13 @@ async def create_donation(
     user: User = Depends(current_user)
 ):
     """Только для зарегистрированных пользователей."""
-    new_donation = await donation_crud.create(
+    return await donation_crud.create(
         await start_invest_after_create_obj(
             donation, CharityProject, session
         ),
         session,
         user
     )
-    return new_donation
 
 
 @router.get(
@@ -44,8 +43,7 @@ async def get_all_donation(
     session: AsyncSession = Depends(get_async_session)
 ):
     """Только для суперюзеров."""
-    all_donation = await donation_crud.get_multi(session)
-    return all_donation
+    return await donation_crud.get_multi(session)
 
 
 @router.get(
@@ -58,7 +56,6 @@ async def get_user_donation(
     user: User = Depends(current_user)
 ):
     """Только для зарегистрированных пользователей."""
-    all_donation_for_user = await donation_crud.get_all_donation_for_user(
+    return await donation_crud.get_all_donation_for_user(
         user.id, session,
     )
-    return all_donation_for_user
